@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'wouter';
+import { Link, useLocation } from 'react-router-dom';
 import {
   Bell,
   ChevronDown,
@@ -13,10 +13,16 @@ import {
 import { navItems } from '@/components/navigation/nav-items';
 
 export function Header({ onMenu, onSearch }: { onMenu: () => void; onSearch: () => void }) {
-  const [location] = useLocation();
+  const location = useLocation();
   const [noticeOpen, setNoticeOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const current = navItems.find((item) => item.href === location) ?? navItems[0];
+  
+  // Find current nav item by checking if the pathname matches or starts with the nav item's href
+  const current = navItems.find((item) => {
+    if (item.href === '/admin') return location.pathname === '/admin';
+    return location.pathname.startsWith(item.href);
+  }) ?? navItems[0];
+
   return (
     <header className="relative flex h-[72px] shrink-0 items-center justify-between border-b border-[#1E3A5F] bg-[#07111F] px-4 sm:px-6 lg:px-8">
       <div className="flex min-w-0 items-center gap-3">
@@ -89,7 +95,7 @@ export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => 
         <div className="max-h-72 overflow-y-auto p-2">
           {matches.length > 0 ? matches.map((item) => {
             const ItemIcon = item.icon;
-            return <Link key={item.href} href={item.href} onClick={onClose} className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-[#94A3B8] hover:bg-[#12243A] hover:text-[#F8FAFC]" data-testid={`link-search-${item.href.split('/').pop()}`}><ItemIcon size={16} /><span>{item.label}</span><span className="ml-auto font-mono-data text-[10px] text-[#64748B]">{item.section}</span></Link>;
+            return <Link key={item.href} to={item.href} onClick={onClose} className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-[#94A3B8] hover:bg-[#12243A] hover:text-[#F8FAFC]" data-testid={`link-search-${item.href.split('/').pop()}`}><ItemIcon size={16} /><span>{item.label}</span><span className="ml-auto font-mono-data text-[10px] text-[#64748B]">{item.section}</span></Link>;
           }) : <p className="px-3 py-6 text-center text-xs text-[#64748B]">No pages match that search.</p>}
         </div>
       </div>

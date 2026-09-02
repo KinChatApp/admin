@@ -1,10 +1,10 @@
-import { Link, useLocation } from 'wouter';
+import { Link, useLocation } from 'react-router-dom';
 import { CircleHelp, PanelLeftClose } from 'lucide-react';
 import { navItems, navSections } from '@/components/navigation/nav-items';
 
 function Brand({ collapsed }: { collapsed: boolean }) {
   return (
-    <Link href="/admin" className="flex items-center gap-3 px-1 py-1.5" data-testid="link-brand-home">
+    <Link to="/admin" className="flex items-center gap-3 px-1 py-1.5" data-testid="link-brand-home">
       <span className="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-[#2563EB] text-sm font-bold text-white shadow-[0_0_0_4px_rgba(37,99,235,0.12)]">K</span>
       {!collapsed && (
         <span className="leading-none">
@@ -17,7 +17,9 @@ function Brand({ collapsed }: { collapsed: boolean }) {
 }
 
 export function Sidebar({ collapsed, setCollapsed, onNavigate }: { collapsed: boolean; setCollapsed: (value: boolean) => void; onNavigate?: () => void }) {
-  const [location] = useLocation();
+  const location = useLocation();
+  const currentPath = location.pathname;
+
   return (
     <aside className={`flex h-full shrink-0 flex-col border-r border-[#1E3A5F] bg-[#07111F] transition-[width] duration-200 ${collapsed ? 'w-[72px]' : 'w-[248px]'}`}>
       <div className={`flex h-[72px] items-center border-b border-[#1E3A5F] ${collapsed ? 'justify-center px-3' : 'justify-between px-5'}`}>
@@ -34,12 +36,16 @@ export function Sidebar({ collapsed, setCollapsed, onNavigate }: { collapsed: bo
             {!collapsed && <p className="mb-2 px-3 font-mono-data text-[9px] font-medium uppercase tracking-[0.18em] text-[#64748B]">{section}</p>}
             <div className="space-y-0.5">
               {navItems.filter((item) => item.section === section).map((item) => {
-                const active = location === item.href;
+                // Determine active state: exact match for overview, partial match for sub-routes
+                const active = item.href === '/admin' 
+                  ? currentPath === '/admin' 
+                  : currentPath.startsWith(item.href);
+
                 const ItemIcon = item.icon;
                 return (
                   <Link
                     key={item.href}
-                    href={item.href}
+                    to={item.href}
                     onClick={onNavigate}
                     className={`group flex h-10 items-center gap-3 rounded-md px-3 text-[13px] transition-colors ${collapsed ? 'justify-center' : ''} ${active ? 'bg-[#12243A] font-medium text-[#F8FAFC]' : 'text-[#94A3B8] hover:bg-[#0D1B2A] hover:text-[#F8FAFC]'}`}
                     aria-current={active ? 'page' : undefined}

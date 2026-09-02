@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
 import { ArrowUpRight, Clock3 } from 'lucide-react';
-import { Link } from 'wouter';
+import { Link } from 'react-router-dom';
 import { TinyLabel } from '@/components/layout/tiny-label';
 
 type IconType = ComponentType<{ className?: string; size?: number; strokeWidth?: number }>;
@@ -31,7 +31,7 @@ export function ComingSoonPage({ slug, eyebrow, title, description, icon: Icon }
               <p className="mt-1 text-[11px] leading-5 text-[#64748B]">The foundation is ready. Data views and actions will arrive here in a future release.</p>
             </div>
           </div>
-          <Link href="/admin" className="mt-8 inline-flex items-center gap-2 text-xs font-medium text-[#60A5FA] hover:text-[#93C5FD]" data-testid={`link-return-overview-${slug}`}>
+          <Link to="/admin" className="mt-8 inline-flex items-center gap-2 text-xs font-medium text-[#60A5FA] hover:text-[#93C5FD]" data-testid={`link-return-overview-${slug}`}>
             Return to overview<ArrowUpRight size={14} />
           </Link>
         </div>

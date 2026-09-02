@@ -18,11 +18,11 @@ import SecurityPage from '@/pages/security';
 import DeveloperPage from '@/pages/developer';
 import NotFound from '@/pages/not-found';
 import {
+  BrowserRouter,
+  Routes,
   Route,
-  Switch,
   useLocation,
-  Router as WouterRouter,
-} from 'wouter';
+} from 'react-router-dom';
 
 const queryClient = new QueryClient();
 
@@ -30,55 +30,43 @@ function Home() {
   return <Overview />;
 }
 
-function Router() {
+function AppRouter() {
   return (
-    // Keep a shared shell (sidebar, navbar) outside the boundary so it
-    // survives a page crash.
     <RoutedErrorBoundary>
       <AdminShell>
-        <Switch>
-          <Route path="/" component={Home} />
-          <Route path="/admin" component={Overview} />
-          <Route path="/admin/users" component={UsersPage} />
-          <Route path="/admin/communication" component={CommunicationPage} />
-          <Route path="/admin/communication/:rest*" component={CommunicationPage} />
-          <Route path="/admin/calls" component={CallsPage} />
-          <Route path="/admin/calls/:rest*" component={CallsPage} />
-          <Route path="/admin/content" component={ContentPage} />
-          <Route path="/admin/content/:rest*" component={ContentPage} />
-          <Route path="/admin/safety" component={SafetyPage} />
-          <Route path="/admin/safety/:rest*" component={SafetyPage} />
-          <Route path="/admin/engagement" component={EngagementPage} />
-          <Route path="/admin/engagement/:rest*" component={EngagementPage} />
-          <Route path="/admin/analytics" component={AnalyticsPage} />
-          <Route path="/admin/analytics/:rest*" component={AnalyticsPage} />
-          <Route path="/admin/platform" component={PlatformPage} />
-          <Route path="/admin/platform/:rest*" component={PlatformPage} />
-          <Route path="/admin/operations" component={OperationsPage} />
-          <Route path="/admin/operations/:rest*" component={OperationsPage} />
-          <Route path="/admin/security" component={SecurityPage} />
-          <Route path="/admin/security/:rest*" component={SecurityPage} />
-          <Route path="/admin/developer" component={DeveloperPage} />
-          <Route path="/admin/developer/:rest*" component={DeveloperPage} />
-          <Route component={NotFound} />
-        </Switch>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/admin" element={<Overview />} />
+          <Route path="/admin/users" element={<UsersPage />} />
+          <Route path="/admin/communication/*" element={<CommunicationPage />} />
+          <Route path="/admin/calls/*" element={<CallsPage />} />
+          <Route path="/admin/content/*" element={<ContentPage />} />
+          <Route path="/admin/safety/*" element={<SafetyPage />} />
+          <Route path="/admin/engagement/*" element={<EngagementPage />} />
+          <Route path="/admin/analytics/*" element={<AnalyticsPage />} />
+          <Route path="/admin/platform/*" element={<PlatformPage />} />
+          <Route path="/admin/operations/*" element={<OperationsPage />} />
+          <Route path="/admin/security/*" element={<SecurityPage />} />
+          <Route path="/admin/developer/*" element={<DeveloperPage />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </AdminShell>
     </RoutedErrorBoundary>
   );
 }
 
 function RoutedErrorBoundary({ children }: { children: ReactNode }) {
-  const [location] = useLocation();
-  return <ErrorBoundary resetKey={location}>{children}</ErrorBoundary>;
+  const location = useLocation();
+  return <ErrorBoundary resetKey={location.pathname}>{children}</ErrorBoundary>;
 }
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-          <Router />
-        </WouterRouter>
+        <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+          <AppRouter />
+        </BrowserRouter>
         <Toaster />
       </TooltipProvider>
     </QueryClientProvider>
